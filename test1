@@ -1,0 +1,207 @@
+#! /bin/bash
+clear
+
+function compresion()
+{
+fl1=` cat cityt `
+for i in $fl1
+do
+! awk '{print $6}' PhoneBook_Main | grep -ic "$i" | cat >> file2 | echo " -- " $i | cat >> file2 
+done 
+! sort file2 | tac | cat > file1
+! tail -6 file1 | cat > file1
+echo "top 3: "
+! cat file1
+
+read p 
+
+}
+
+
+function cities()
+{
+city1=` awk '{print $6}' PhoneBook_Main `
+for i in $city1
+do
+if `grep -oiE "$i" cityt >>/dev/null`
+then
+
+continue
+else
+echo "$i" >> cityt
+fi
+done
+
+ct=`cat cityt`
+for i in $ct
+do
+echo "$i --- ` awk '{print $6}' PhoneBook_Main | grep -ic "$i"`"
+done
+read p
+}
+
+
+
+function stat_mail()
+{
+echo "Mail:"
+mail=` awk '{print $5}' PhoneBook_Main | grep -Eio "@[a-z|.]+" `
+
+for i in $mail
+do
+if `grep -iEo "$i" mailt >>/dev/null`
+then
+continue
+else
+echo "$i" >> mailt
+fi
+done
+ml=`cat mailt`
+for i in $ml
+do
+echo "$i --- `awk '{print $5}' PhoneBook_Main | grep -ic "$i"`"
+
+done
+read p
+clear
+}
+
+
+function stat_age(){
+echo "less then 18: "
+! awk '{print " " $3 " "}' PhoneBook_Main | grep -c -e "1[0-8]" -e " [0-9] "
+echo "more then 18 and less than 25: "
+! awk '{print $3}' PhoneBook_Main | grep -c -e"2[0-5]" -e"19"
+echo "more then 25: "
+! awk '{print $3}' PhoneBook_Main | grep -c -e"2[6-9]" -e"[3-9][0-9]"
+read p
+clear
+}
+
+function statistic()
+{
+clear
+echo "1) Age:"
+echo "2) Mail:"
+echo "3) Cities:"
+read p
+clear
+case $p in
+1)
+stat_age
+;;
+2)
+stat_mail
+;;
+3)
+cities
+;;
+esac
+}
+
+
+
+function main()
+{
+while true;
+do
+clear
+echo "1) Statistic:"
+echo "2) Search:"
+echo "3) Compresion:"
+echo "4) Exit:"
+read b
+
+case $b in
+1)
+statistic
+;;
+2)
+Search_
+;;
+3)
+compresion
+;;
+4)
+exit 0
+;;
+esac
+done
+}
+
+
+
+function Mail()
+{
+echo "Search Mail:"
+read y
+
+echo -e "`grep -i " $y[a-z|_|1-9]*@" PhoneBook_Main` \n"
+echo "Write something to countinue: "
+read y
+
+}
+
+function Phone()
+
+{
+echo "Search Phone:"
+read p
+! awk '{print $1" "$2" "$3" ["$4"] "$5" "$6" "$7}' PhoneBook_Main  | grep -iE " \[$p[1-9]+\]" 
+echo "Write something to countinue: "
+read p
+}
+
+function Surname()
+{
+echo "Search Surname:"
+read l
+! awk '{print $1" ["$2"] "$3" "$4" "$5" "$6" "$7}' PhoneBook_Main | grep -i "\[$l"
+echo "Write something to countinue: "
+read l
+}
+
+function City()
+{
+clear
+echo -e "Search City:"
+
+read z
+
+! awk '{print $1" "$2" "$3" "$4" "$5" ["$6"] "$7}' PhoneBook_Main | grep -i "\[$z"
+echo "Write something to countinue: "
+read z
+}
+
+function Search_()
+{
+clear
+echo "1) Mail:"
+echo "2) Phone:"
+echo "3) Surname:"
+echo "4) City:"
+echo "5) Exit:"
+read x
+
+clear
+case $x in
+ 1)
+  Mail
+;;
+2)
+ Phone
+;;
+3)
+ Surname
+;;
+4)
+ City
+;;
+5)
+ exit 0
+;;
+esac  
+
+}
+main
+
